@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "start": "PATH=\"$PWD/.revolte/runtime/bin:$PATH\" npm run dev",
+  "port": 4173,
+  "install": [
+    {
+      "name": "Node.js 22",
+      "check": "test -x .revolte/runtime/bin/node && .revolte/runtime/bin/node -e \"process.exit(Number(process.versions.node.split(String.fromCharCode(46))[0]) >= 22 ? 0 : 1)\"",
+      "run": "mkdir -p .revolte/runtime && architecture=$(uname -m) && case \"$architecture\" in x86_64) architecture=x64 ;; aarch64) architecture=arm64 ;; *) exit 1 ;; esac && curl -fsSL https://nodejs.org/dist/v22.23.2/node-v22.23.2-linux-$architecture.tar.xz | tar -xJ --strip-components=1 -C .revolte/runtime"
+    },
+    {
+      "name": "Application packages",
+      "check": "PATH=\"$PWD/.revolte/runtime/bin:$PATH\" npm ls --depth=0",
+      "run": "PATH=\"$PWD/.revolte/runtime/bin:$PATH\" npm ci"
+    }
+  ],
+  "services": []
+}
